@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
+import modelo.dao.DaoFactory;
+import modelo.dao.SellerDao;
 import modelo.entities.Department;
 import modelo.entities.Seller;
 
@@ -20,6 +22,9 @@ public class Program {
 		System.out.println(department);
 		System.out.println("----------------------------");
 		System.out.println(seller);
+		
+		SellerDao sellerDao = DaoFactory.createSellerDao();
+		
 		
 		sc.close();
 	}
