@@ -1,12 +1,10 @@
 package application;
 
-import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
 import modelo.dao.DaoFactory;
 import modelo.dao.SellerDao;
-import modelo.entities.Department;
 import modelo.entities.Seller;
 
 public class Program {
@@ -15,16 +13,11 @@ public class Program {
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
 		
-		Department department = new Department(4, "Books");
-		
-		
-		Seller seller = new Seller(15, "Ulisses", "Ulisses@ulis", new Date(), 2500.00, department);
-		System.out.println(department);
-		System.out.println("----------------------------");
-		System.out.println(seller);
-		
 		SellerDao sellerDao = DaoFactory.createSellerDao();
 		
+		Seller seller = sellerDao.findById(2);
+		System.out.println(seller);
+
 		
 		sc.close();
 	}
