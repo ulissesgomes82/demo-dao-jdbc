@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import db.DB;
+import db.DbException;
 import modelo.dao.SellerDao;
 import modelo.entities.Department;
 import modelo.entities.Seller;
@@ -65,8 +66,34 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public List<Seller> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		String SQL = "SELECT seller.*, department.Name AS DepName "
+				+ "FROM seller INNER JOIN department "
+				+ "ON seller.DepartmentId = department.Id "
+				+ "ORDER BY Name";
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		try {
+			stm = connection.prepareStatement(SQL);
+			rs = stm.executeQuery();
+			List<Seller> list = new ArrayList<>();
+			Map<Integer, Department> map = new HashMap<>();
+
+			while (rs.next()) {
+				Department department = map.get(rs.getInt("DepartmentId"));
+				if (department == null) {
+					department = instantiateDepartment(rs);
+					map.put(rs.getInt("DepartmentId"), department);
+				}
+				Seller seller = instantiateSeller(rs, department);
+				list.add(seller);
+			}
+			return list;
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closePreparedStatement(stm);
+			DB.closeResultSet(rs);
+		}
 	}
 
 	@Override
@@ -96,12 +123,11 @@ public class SellerDaoJDBC implements SellerDao {
 			}
 			return list;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DbException(e.getMessage());
 		} finally {
 			DB.closePreparedStatement(stm);
 			DB.closeResultSet(rs);
 		}
-		return null;
 	}
 
 	private Department instantiateDepartment(ResultSet rs) throws SQLException {
