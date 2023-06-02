@@ -1,13 +1,13 @@
 package modelo.entities;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
 public class Seller implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	// private static final SimpleDateFormat sdf = new
+	// SimpleDateFormat("dd/MM/yyyy");
 
 	private Integer id;
 	private String name;
@@ -96,8 +96,8 @@ public class Seller implements Serializable {
 
 	@Override
 	public String toString() {
-
-		return String.format("Id = %d%n" + "Name = %s%n" + "Email = %s%n" + "BirthDate = %s%n" + "BaseSalary = %.2f%n"
-				+ "Departmen = %s", id, name, email, sdf.format(birthDate), baseSalary, department);
+		return "Seller [id= " + id + ", name= " + name + ", email= " + email + ", birthDate= " + birthDate
+				+ ", baseSalary= " + baseSalary + ", department= " + department.getName() + "]";
 	}
+
 }

@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import modelo.dao.SellerDao;
@@ -66,10 +69,45 @@ public class SellerDaoJDBC implements SellerDao {
 		return null;
 	}
 
+	@Override
+	public List<Seller> findByDepartment(Department obj) {
+		String SQL = "SELECT seller.*, department.Name AS DepName "
+				+ "FROM seller INNER JOIN department "
+				+ "ON seller.DepartmentId = department.Id "
+				+ "WHERE DepartmentId = ? "
+				+ "ORDER BY Name";
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		try {
+			stm = connection.prepareStatement(SQL);
+			stm.setInt(1, obj.getId());
+			rs = stm.executeQuery();
+			List<Seller> list = new ArrayList<>();
+			Map<Integer, Department> map = new HashMap<>();
+
+			while (rs.next()) {
+				Department department = map.get(rs.getInt("DepartmentId"));
+				if (department == null) {
+					department = instantiateDepartment(rs);
+					map.put(rs.getInt("DepartmentId"), department);
+				}
+				Seller seller = instantiateSeller(rs, department);
+				list.add(seller);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DB.closePreparedStatement(stm);
+			DB.closeResultSet(rs);
+		}
+		return null;
+	}
+
 	private Department instantiateDepartment(ResultSet rs) throws SQLException {
 		Department department = new Department();
-		department.setId(rs.getInt("Id"));
-		department.setName(rs.getString("Name"));
+		department.setId(rs.getInt("DepartmentId"));
+		department.setName(rs.getString("DepName"));
 		return department;
 	}
 
@@ -83,4 +121,5 @@ public class SellerDaoJDBC implements SellerDao {
 		seller.setDepartment(department);
 		return seller;
 	}
+
 }
