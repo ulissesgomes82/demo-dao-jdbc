@@ -36,19 +36,24 @@ public class Program {
 //		for(Seller obj : list)
 //		System.out.println(obj);
 //		
-		System.out.println();
-		System.out.println("\\n=== TEST 4:  seller insert ===");
+//		System.out.println();
+//		System.out.println("\\n=== TEST 4:  seller insert ===");
+//		
+//		Seller seller1 = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.00, new Department(2, null));
+//		sellerDao.insert(seller1);
+//		System.out.println(seller1.getId());
 		
-		Seller seller1 = new Seller(null, "Greg", "greg@gmail.com", new Date(), 4000.00, new Department(2, null));
-		sellerDao.insert(seller1);
-		System.out.println(seller1.getId());
+//		System.out.println();
+//		System.out.println("\\n=== TEST 5:  seller update ===");
+//		seller1 = sellerDao.findById(1);
+//		seller1.setName("Marta Waine");
+//		sellerDao.update(seller1);
+//		System.out.println("Update completed");
 		
 		System.out.println();
-		System.out.println("\\n=== TEST 4:  seller update ===");
-		seller1 = sellerDao.findById(1);
-		seller1.setName("Marta Waine");
-		sellerDao.update(seller1);
-		System.out.println("Update completed");
+		System.out.println("\\n=== TEST 6:  seller update ===");
+		sellerDao.deleteById(12);
+		System.out.println("Delete completed");
 		sc.close();
 	}
 
