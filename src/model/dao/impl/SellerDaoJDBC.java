@@ -81,7 +81,7 @@ public class SellerDaoJDBC implements SellerDao {
 		try {
 			stm = connection.prepareStatement(SQL);
 			stm.setInt(1, id);
-			stm.execute();
+			stm.executeUpdate();
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
