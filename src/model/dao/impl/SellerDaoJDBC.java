@@ -1,9 +1,10 @@
-package modelo.dao.impl;
+package model.dao.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +12,9 @@ import java.util.Map;
 
 import db.DB;
 import db.DbException;
-import modelo.dao.SellerDao;
-import modelo.entities.Department;
-import modelo.entities.Seller;
+import model.dao.SellerDao;
+import model.entities.Department;
+import model.entities.Seller;
 
 public class SellerDaoJDBC implements SellerDao {
 
@@ -25,8 +26,31 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void insert(Seller obj) {
-		// TODO Auto-generated method stub
-
+		String SQL = "INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId) VALUES (?,?,?,?,?)";
+		PreparedStatement stm = null;
+		try {
+			stm = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+			stm.setString(1, obj.getName());
+			stm.setString(2, obj.getEmail());
+			stm.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+			stm.setDouble(4, obj.getBaseSalary());
+			stm.setInt(5, obj.getDepartment().getId());
+			int rowAffected = stm.executeUpdate();
+			if (rowAffected > 0) {
+				ResultSet rs = stm.getGeneratedKeys();
+				if (rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+				DB.closeResultSet(rs);
+			} else {
+				throw new DbException("Unexpected error! No rows affected!");
+			}
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}finally {
+			DB.closePreparedStatement(stm);
+		}
 	}
 
 	@Override
@@ -56,7 +80,7 @@ public class SellerDaoJDBC implements SellerDao {
 				return seller;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DbException(e.getMessage());
 		} finally {
 			DB.closePreparedStatement(stm);
 			DB.closeResultSet(rs);
@@ -66,10 +90,8 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public List<Seller> findAll() {
-		String SQL = "SELECT seller.*, department.Name AS DepName "
-				+ "FROM seller INNER JOIN department "
-				+ "ON seller.DepartmentId = department.Id "
-				+ "ORDER BY Name";
+		String SQL = "SELECT seller.*, department.Name AS DepName " + "FROM seller INNER JOIN department "
+				+ "ON seller.DepartmentId = department.Id " + "ORDER BY Name";
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		try {
@@ -98,11 +120,8 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public List<Seller> findByDepartment(Department obj) {
-		String SQL = "SELECT seller.*, department.Name AS DepName "
-				+ "FROM seller INNER JOIN department "
-				+ "ON seller.DepartmentId = department.Id "
-				+ "WHERE DepartmentId = ? "
-				+ "ORDER BY Name";
+		String SQL = "SELECT seller.*, department.Name AS DepName " + "FROM seller INNER JOIN department "
+				+ "ON seller.DepartmentId = department.Id " + "WHERE DepartmentId = ? " + "ORDER BY Name";
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		try {
