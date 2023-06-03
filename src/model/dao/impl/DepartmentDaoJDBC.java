@@ -4,14 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
 import db.DbException;
-import model.dao.DaoFactory;
 import model.dao.DepartmentDao;
-import model.dao.SellerDao;
 import model.entities.Department;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
@@ -27,12 +26,21 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		String SQL = "INSERT INTO department (Name) value (?)";
 		PreparedStatement stm = null;
 		try {
-			stm = connection.prepareStatement(SQL);
+			stm = connection.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
 			stm.setString(1, obj.getName());
-			stm.executeUpdate();
+			int rowAffected = stm.executeUpdate();
+			if (rowAffected > 0) {
+				ResultSet rs = stm.getGeneratedKeys();
+				if (rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+			}else {
+				throw new DbException("Unexpected error! No rows affected!");
+			}
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}finally {
+		} finally {
 			DB.closePreparedStatement(stm);
 		}
 	}
@@ -63,10 +71,10 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			stm.executeUpdate();
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}finally {
+		} finally {
 			DB.closePreparedStatement(stm);
 		}
-		
+
 	}
 
 	@Override
@@ -84,11 +92,11 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			}
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}finally {
+		} finally {
 			DB.closePreparedStatement(stm);
 			DB.closeResultSet(rs);
 		}
-		
+
 		return null;
 	}
 
