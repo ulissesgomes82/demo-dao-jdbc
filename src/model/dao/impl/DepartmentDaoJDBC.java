@@ -22,7 +22,15 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public void insert(Department obj) {
-		// TODO Auto-generated method stub
+		String SQL = "INSERT INTO department (Name) value (?)";
+		PreparedStatement stm = null;
+		try {
+			stm = connection.prepareStatement(SQL);
+			stm.setString(1, obj.getName());
+			stm.executeUpdate();
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
 
 	}
 
@@ -34,8 +42,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public void deleteById(Integer id) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -64,7 +71,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		try {
 			stm = connection.prepareStatement(SQL);
 			ResultSet rs = stm.executeQuery();
-			
+
 			List<Department> list = new ArrayList<>();
 			while (rs.next()) {
 				Department department = instantiateDepartment(rs);
@@ -74,7 +81,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			return list;
 		} catch (Exception e) {
 			throw new DbException(e.getMessage());
-		}finally {
+		} finally {
 			DB.closePreparedStatement(stm);
 		}
 	}

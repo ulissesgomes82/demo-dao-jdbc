@@ -10,18 +10,23 @@ public class Program2 {
 
 	public static void main(String[] args) {
 	
-		System.out.println("=== Test 1 : department findById");
-		
+//		System.out.println("=== Test 1 : department findById");
+//		
 		DepartmentDao departmentDao = DaoFactory.createDepartmentDao();
-		Department department1 = departmentDao.findById(2);
-		System.out.println(department1);
-
+//		Department department1 = departmentDao.findById(2);
+//		System.out.println(department1);
+//
+//		System.out.println();
+//		System.out.println("=== Test 2 : department findAll");
+//		List<Department> list = departmentDao.findAll();
+//		for(Department department2 : list) {
+//			System.out.println(department2);
+//		}
+		
 		System.out.println();
-		System.out.println("=== Test 2 : department findAll");
-		List<Department> list = departmentDao.findAll();
-		for(Department department2 : list) {
-			System.out.println(department2);
-		}
+		System.out.println("=== Test 2 : department insert");
+		departmentDao.insert(new Department(null, "teste"));
+		System.out.println("insert completed");
 	}
 
 }
