@@ -4,6 +4,7 @@ import java.util.List;
 
 import model.dao.DaoFactory;
 import model.dao.DepartmentDao;
+import model.dao.SellerDao;
 import model.entities.Department;
 
 public class Program2 {
@@ -23,10 +24,16 @@ public class Program2 {
 //			System.out.println(department2);
 //		}
 		
+//		System.out.println();
+//		System.out.println("=== Test 3 : department insert");
+//		departmentDao.insert(new Department(null, "teste"));
+//		System.out.println("insert completed");
+		
 		System.out.println();
-		System.out.println("=== Test 2 : department insert");
-		departmentDao.insert(new Department(null, "teste"));
-		System.out.println("insert completed");
+		System.out.println("=== Test 4 : department update");
+		Department department = departmentDao.findById(5);
+		department.setName("Ulisses");
+		departmentDao.update(department);
 	}
 
 }
