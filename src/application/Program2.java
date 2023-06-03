@@ -34,6 +34,10 @@ public class Program2 {
 		Department department = departmentDao.findById(5);
 		department.setName("Ulisses");
 		departmentDao.update(department);
+		
+		System.out.println();
+		System.out.println("=== Test 5 : department delete");
+		departmentDao.deleteById(7);
 	}
 
 }

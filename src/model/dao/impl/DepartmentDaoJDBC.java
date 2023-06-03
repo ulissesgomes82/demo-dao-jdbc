@@ -9,7 +9,9 @@ import java.util.List;
 
 import db.DB;
 import db.DbException;
+import model.dao.DaoFactory;
 import model.dao.DepartmentDao;
+import model.dao.SellerDao;
 import model.entities.Department;
 
 public class DepartmentDaoJDBC implements DepartmentDao {
@@ -53,7 +55,18 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 
 	@Override
 	public void deleteById(Integer id) {
-
+		String SQL = "DELETE FROM department WHERE id = ?";
+		PreparedStatement stm = null;
+		try {
+			stm = connection.prepareStatement(SQL);
+			stm.setInt(1, id);
+			stm.executeUpdate();
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}finally {
+			DB.closePreparedStatement(stm);
+		}
+		
 	}
 
 	@Override
@@ -71,7 +84,11 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			}
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
+		}finally {
+			DB.closePreparedStatement(stm);
+			DB.closeResultSet(rs);
 		}
+		
 		return null;
 	}
 
