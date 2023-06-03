@@ -74,7 +74,6 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		} finally {
 			DB.closePreparedStatement(stm);
 		}
-
 	}
 
 	@Override
